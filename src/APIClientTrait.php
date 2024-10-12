@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 
 trait APIClientTrait {
 
-    const BASE_URI = 'https://api.schwabapi.com/trader/v1/';
+    protected string $baseUri = 'https://api.schwabapi.com/trader/v1/';
 
     /**
      * @var Client
@@ -30,7 +30,7 @@ trait APIClientTrait {
         endif;
 
         $options = [
-            'base_uri' => self::BASE_URI,
+            'base_uri' => $this->baseUri,
             'headers'  => $headers,
             'debug'    => $debug,
         ];
