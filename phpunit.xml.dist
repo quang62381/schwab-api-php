@@ -22,9 +22,13 @@
     </filter>
     <php>
         <env name="CHROME_PATH" value="/opt/homebrew/bin/chromium"/>
-        <env name="SCHWAB_CALLBACK_URL" value="https://example.com/callback"/>
+        <env name="SCHWAB_AUTHENTICATE_CALLBACK_URL" value="https://example.com/callback/auth"/>
+        <env name="SCHWAB_TOKEN_CALLBACK_URL" value="https://example.com/callback/token"/>
         <env name="SCHWAB_API_KEY" value="some_api_key"/>
         <env name="SCHWAB_API_SECRET" value="some_api_secret"/>
+        <env name="CODE" value="some_code"/>
+        <env name="SESSION" value="session"/>
+
     </php>
 
     <logging>
