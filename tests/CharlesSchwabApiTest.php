@@ -27,22 +27,19 @@ class CharlesSchwabApiTest extends TestCase {
 
     protected function setUp(): void {
 
-        $this->code                 = $_ENV[ 'CODE' ];
-        $this->session              = $_ENV[ 'SESSION' ];
-        $apiKey                     = $_ENV[ 'SCHWAB_API_KEY' ];
-        $apiSecret                  = $_ENV[ 'SCHWAB_API_SECRET' ];
-        $apiCallbackUrlAuthenticate = $_ENV[ 'SCHWAB_AUTHENTICATE_CALLBACK_URL' ];
-        $apiCallbackUrlToken        = $_ENV[ 'SCHWAB_TOKEN_CALLBACK_URL' ];
-        $debug                      = TRUE;
+        $this->code     = $_ENV[ 'CODE' ];
+        $this->session  = $_ENV[ 'SESSION' ];
+        $apiKey         = $_ENV[ 'SCHWAB_API_KEY' ];
+        $apiSecret      = $_ENV[ 'SCHWAB_API_SECRET' ];
+        $apiCallbackUri = $_ENV[ 'SCHWAB_CALLBACK_URI' ];
 
 
         $this->api = new SchwabAPI( $apiKey,
                                     $apiSecret,
-                                    $apiCallbackUrlAuthenticate,
-                                    $apiCallbackUrlToken,
+                                    $apiCallbackUri,
                                     $this->code,
-                                    null,
-                                    $debug );
+                                    NULL,
+                                    true );
 
     }
 
@@ -54,6 +51,10 @@ class CharlesSchwabApiTest extends TestCase {
         $this->assertInstanceOf( SchwabAPI::class, $this->api );
     }
 
+    /**
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function testGetTokenShouldGetToken() {
         $token = $this->api->requestToken();
     }
