@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 
 
-
 class SchwabAPI {
 
 
@@ -159,11 +158,14 @@ class SchwabAPI {
      * This method will get called from the CALLBACK URL of yours, after the
      * Schwab site directs back to your CALLBACK URL after authorization.
      *
+     * @param bool $doRefreshToken
+     *
      * @return void
-     * @throws \MichaelDrennen\SchwabAPI\Exceptions\RequestException
+     * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \MichaelDrennen\SchwabAPI\Exceptions\RequestException
      */
-    public function requestToken(): void {
+    public function requestToken( bool $doRefreshToken = FALSE ): void {
         $options = [
             'headers'     => [
                 'Authorization' => "Basic " . base64_encode( $this->apiKey . ':' . $this->apiSecret ),
@@ -176,6 +178,15 @@ class SchwabAPI {
                 'redirect_uri' => $this->apiCallbackUrl,
             ],
         ];
+
+
+        if ( $doRefreshToken ):
+            if ( !$this->refreshToken ):
+                throw new \Exception( "You are asking to refresh the access token, but you don't have a refresh token." );
+            endif;
+            $options[ 'form_params' ][ 'grant_type' ]    = 'refresh_token';
+            $options[ 'form_params' ][ 'refresh_token' ] = $this->refreshToken;
+        endif;
 
         try {
             $response = $this->client->post( 'https://api.schwabapi.com/v1/oauth/token', $options );
@@ -214,8 +225,12 @@ class SchwabAPI {
     }
 
 
+
+
+
     /**
      * A simple getter for the accessToken.
+     *
      * @return string
      */
     public function getAccessToken(): string {
@@ -225,6 +240,7 @@ class SchwabAPI {
 
     /**
      * A simple getter for the refreshToken.
+     *
      * @return string
      */
     public function getRefreshToken(): string {
