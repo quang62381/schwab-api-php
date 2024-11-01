@@ -17,9 +17,15 @@ class SchwabAPI {
     protected Client $client;
 
 
+    /**
+     * @var string
+     */
     protected string $apiKey;
 
 
+    /**
+     * @var string
+     */
     protected string $apiSecret;
 
 
@@ -35,6 +41,9 @@ class SchwabAPI {
      */
     protected ?string $code = NULL;
 
+    /**
+     * @var string|null
+     */
     protected ?string $token = NULL;
 
 
