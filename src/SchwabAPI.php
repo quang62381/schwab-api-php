@@ -6,11 +6,7 @@ use GuzzleHttp\Client;
 use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 
 
-/**
- * Customer Service Number for when I get locked out
- * Doesn't work
- * 800-780-2755
- */
+
 class SchwabAPI {
 
 
@@ -218,6 +214,22 @@ class SchwabAPI {
     }
 
 
+    /**
+     * A simple getter for the accessToken.
+     * @return string
+     */
+    public function getAccessToken(): string {
+        return $this->accessToken;
+    }
+
+
+    /**
+     * A simple getter for the refreshToken.
+     * @return string
+     */
+    public function getRefreshToken(): string {
+        return $this->refreshToken;
+    }
 
 
 
