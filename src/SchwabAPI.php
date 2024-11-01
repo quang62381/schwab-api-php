@@ -3,6 +3,7 @@
 namespace MichaelDrennen\SchwabAPI;
 
 use GuzzleHttp\Client;
+use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 
 
 /**
@@ -163,6 +164,7 @@ class SchwabAPI {
      * Schwab site directs back to your CALLBACK URL after authorization.
      *
      * @return void
+     * @throws \MichaelDrennen\SchwabAPI\Exceptions\RequestException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function requestToken(): void {
@@ -210,21 +212,8 @@ class SchwabAPI {
         } catch ( \Exception $exception ) {
             $response             = $exception->getResponse();
             $responseBodyAsString = $response->getBody()->getContents();
-            $jsonResponse         = json_decode( $responseBodyAsString );
 
-            $errorDescription = $jsonResponse->error_description;
-
-            $pattern               = '/{/';
-            $errorDescriptionParts = preg_split( $pattern, $errorDescription );
-            $json                  = '{' . $errorDescriptionParts[ 1 ];
-            $json                  = trim( $json );
-            $json                  = trim( $json, '"' );
-
-
-            $jsonError = json_decode( $json, TRUE );
-            dump( $jsonResponse );
-            dump( $jsonError );
-            return;
+            throw new RequestException( "Schwab API returned an error.", 0, NULL, $responseBodyAsString );
         }
     }
 
