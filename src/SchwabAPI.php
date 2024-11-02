@@ -136,6 +136,14 @@ class SchwabAPI {
 
 
     /**
+     * @return int The number of seconds until the access token expires.
+     */
+    public function getExpiresIn(): int {
+        return $this->expiresIn;
+    }
+
+
+    /**
      * Setter for the 'code' returned from the Schwab authorization request
      * You set the callback URL for your APP.
      * After you redirect your USER to the getAutorizeUrl(), and your USER goes
