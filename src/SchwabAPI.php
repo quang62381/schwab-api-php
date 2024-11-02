@@ -42,11 +42,6 @@ class SchwabAPI {
      */
     protected ?string $code = NULL;
 
-    /**
-     * @var string|null
-     */
-    protected ?string $token = NULL;
-
 
     /**
      * @var string Also returned from https://api.schwabapi.com/v1/oauth/authorize?
@@ -107,14 +102,16 @@ class SchwabAPI {
                                  string $apiSecret,
                                  string $apiCallbackUrl,
                                  string $authenticationCode = NULL,
-                                 string $token = NULL,
+                                 string $accessToken = NULL,
+                                 string $refreshToken = NULL,
                                  bool   $debug = FALSE ) {
 
         $this->apiKey         = $apiKey;
         $this->apiSecret      = $apiSecret;
         $this->apiCallbackUrl = $apiCallbackUrl;
         $this->code           = $authenticationCode;
-        $this->token          = $token;
+        $this->accessToken    = $accessToken;
+        $this->refreshToken   = $refreshToken;
         $this->debug          = $debug;
 
 
@@ -367,11 +364,12 @@ class SchwabAPI {
 
     /**
      * All orders for a specific account. Orders retrieved can be filtered based on input parameters below. Maximum date range is 1 year.
+     *
      * @param string              $hashValueOfAccountNumber
      * @param int|NULL            $maxResults The max number of orders to retrieve. Default is 3000.
-     * @param \Carbon\Carbon|NULL $fromTime Specifies that no orders entered before this time should be returned.
-     * @param \Carbon\Carbon|NULL $toTime Specifies that no orders entered after this time should be returned.
-     * @param string|NULL         $status Specifies that only orders of this status should be returned. Valid values can be found in the method body below.
+     * @param \Carbon\Carbon|NULL $fromTime   Specifies that no orders entered before this time should be returned.
+     * @param \Carbon\Carbon|NULL $toTime     Specifies that no orders entered after this time should be returned.
+     * @param string|NULL         $status     Specifies that only orders of this status should be returned. Valid values can be found in the method body below.
      *
      * @return array
      * @throws \Exception
