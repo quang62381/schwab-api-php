@@ -16,23 +16,21 @@ trait APIClientTrait {
 
 
     /**
-     * @param string|NULL $token
-     * @param bool $debug
-     * @return Client
+     * @return \GuzzleHttp\Client
      */
-    protected function createGuzzleClient( string $token = NULL, bool $debug = FALSE ): Client {
+    protected function createGuzzleClient(): Client {
         $headers             = [];
         $headers[ 'Accept' ] = 'application/json';
 
         // The $token param will not be sent on the first API call which should exchange the request code for a token.
-        if ( $token ):
-            $headers[ 'Authorization' ] = 'Bearer ' . $token;
+        if ( $this->accessToken ):
+            $headers[ 'Authorization' ] = 'Bearer ' . $this->accessToken;
         endif;
 
         $options = [
             'base_uri' => $this->baseUri,
             'headers'  => $headers,
-            'debug'    => $debug,
+            'debug'    => $this->debug,
         ];
         return new Client( $options );
     }
