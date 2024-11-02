@@ -70,12 +70,12 @@ class SchwabAPI {
     /**
      * @var string Ex: "refresh_token" => big-long-string_that_ends-in-a-@"
      */
-    protected string $refreshToken;
+    protected ?string $refreshToken = NULL;
 
     /**
      * @var string Ex: "access_token" => "another-big-long-string_that_ends-in-a-@"
      */
-    protected string $accessToken;
+    protected ?string $accessToken = NULL;
 
     /**
      * @var string Ex: "id_token" => "a-super-long-string"
@@ -94,8 +94,9 @@ class SchwabAPI {
      * @param string      $apiKey
      * @param string      $apiSecret
      * @param string      $apiCallbackUrl
-     * @param string|null $authenticationCode
-     * @param string|null $token
+     * @param string|NULL $authenticationCode
+     * @param string|NULL $accessToken
+     * @param string|NULL $refreshToken
      * @param bool        $debug
      */
     public function __construct( string $apiKey,
