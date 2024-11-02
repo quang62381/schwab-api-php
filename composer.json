@@ -3,7 +3,7 @@
     "description": "A PHP library to connect to the Charles Schwab API.",
     "type": "library",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "guzzlehttp/guzzle": "^7.9",
         "illuminate/support": "^9"
     },

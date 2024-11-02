@@ -92,6 +92,8 @@ class SchwabAPI {
     protected bool $debug = FALSE;
 
 
+    const BASE_URL = 'https://api.schwabapi.com/trader/v1';
+
     /**
      * @param string      $apiKey
      * @param string      $apiSecret
@@ -259,4 +261,69 @@ class SchwabAPI {
     public function getRefreshToken(): string {
         return $this->refreshToken;
     }
+
+
+    /**
+     * @param string $urlSuffix
+     * @param string $method
+     *
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function _request( string $urlSuffix, string $method = 'GET' ): array {
+        $method = strtoupper( $method );
+
+        $url     = self::BASE_URL . $urlSuffix;
+        $options = [
+            'headers' => [
+                'Authorization' => "Bearer " . $this->accessToken,
+            ],
+            'debug'   => $this->debug,
+        ];
+
+        if ( 'POST' == $method ):
+            $response = $this->client->post( $url, $options );
+        else:
+            $response = $this->client->get( $url, $options );
+        endif;
+
+        $json = $response->getBody()->getContents();
+        $data = json_decode( $json, TRUE );
+
+        return $data;
+    }
+
+
+    // REQUESTS
+
+    /**
+     * print_r() of $data
+     * Array ( [0] => Array ( [accountNumber] => 27834695236 [hashValue] => 397465203847059238764059762304 ) [1] => Array ( [accountNumber] => 08347502745 [hashValue] => A34502983740527304857203947580A535A67529CC ) )
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function accountNumbers(): array {
+        $suffix = '/accounts/accountNumbers';
+        return $this->_request( $suffix );
+    }
+
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function accounts(): array {
+        $suffix = '/accounts';
+        return $this->_request( $suffix );
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function account( string $accountNumber): array {
+        $suffix = '/accounts/' . $accountNumber;
+        return $this->_request( $suffix );
+    }
+
+
+
 }
