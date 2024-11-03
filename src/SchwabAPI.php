@@ -117,7 +117,7 @@ class SchwabAPI {
         $this->refreshToken   = $refreshToken;
         $this->debug          = $debug;
 
-        $this->client = $this->_createGuzzleClient();
+        $this->client = $this->_createGuzzleClient($this->accessToken, $this->debug);
     }
 
 

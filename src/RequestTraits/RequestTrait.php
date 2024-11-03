@@ -17,28 +17,25 @@ trait RequestTrait {
     protected Client $client;
 
 
-    protected ?string $accessToken = NULL;
-
-
-    protected bool $debug = FALSE;
-
-
     /**
+     * @param string|NULL $accessToken
+     * @param bool        $debug
+     *
      * @return \GuzzleHttp\Client
      */
-    protected function _createGuzzleClient(): Client {
+    protected function createGuzzleClient( string $accessToken = NULL, bool $debug = FALSE ): Client {
         $headers             = [];
         $headers[ 'Accept' ] = 'application/json';
 
         // The $token param will not be sent on the first API call which should exchange the request code for a token.
-        if ( $this->accessToken ):
-            $headers[ 'Authorization' ] = 'Bearer ' . $this->accessToken;
+        if ( $accessToken ):
+            $headers[ 'Authorization' ] = 'Bearer ' . $accessToken;
         endif;
 
         $options = [
             'base_uri' => self::BASE_URL,
             'headers'  => $headers,
-            'debug'    => $this->debug,
+            'debug'    => $debug,
         ];
         return new Client( $options );
     }
