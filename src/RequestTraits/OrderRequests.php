@@ -63,8 +63,8 @@ trait OrderRequests {
         endif;
 
         if ( $fromTime && $toTime ):
-            $queryParameters[ 'fromTime' ] = $fromTime->toIso8601String();
-            $queryParameters[ 'toTime' ]   = $fromTime->toIso8601String();
+            $queryParameters[ 'fromEnteredTime' ] = $fromTime->toIso8601String();
+            $queryParameters[ 'toEnteredTime' ]   = $fromTime->toIso8601String();
         endif;
 
         if ( $status ):
@@ -80,6 +80,7 @@ trait OrderRequests {
             $suffix .= '?' . http_build_query( $queryParameters );
         endif;
 
+        // https://api.schwabapi.com/trader/v1/orders?fromEnteredTime=2024-11-01T00%3A00%3A00%2B00%3A00&toEnteredTime=2024-11-30T00%3A00%3A00%2B00%3A00
         return $this->_request( $suffix );
     }
 
@@ -118,8 +119,8 @@ trait OrderRequests {
         endif;
 
         if ( $fromTime && $toTime ):
-            $queryParameters[ 'fromTime' ] = $fromTime->toIso8601String();
-            $queryParameters[ 'toTime' ]   = $fromTime->toIso8601String();
+            $queryParameters[ 'fromEnteredTime' ] = $fromTime->toIso8601String();
+            $queryParameters[ 'toEnteredTime' ]   = $fromTime->toIso8601String();
         endif;
 
         if ( $status ):
