@@ -8,9 +8,6 @@ use GuzzleHttp\Client;
 trait RequestTrait  {
 
 
-    //const BASE_URL = 'https://api.schwabapi.com/trader/v1';
-
-
     /**
      * @var \GuzzleHttp\Client The Guzzle HTTP client, so I can make requests to the Schwab API.
      */
