@@ -11,6 +11,7 @@ use Carbon\Carbon;
 trait QuoteRequests {
 
     use RequestTrait;
+    use UrlTraderTrait;
 
 
     /**

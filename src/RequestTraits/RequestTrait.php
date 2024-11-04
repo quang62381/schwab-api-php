@@ -5,10 +5,10 @@ namespace MichaelDrennen\SchwabAPI\RequestTraits;
 use GuzzleHttp\Client;
 
 
-trait RequestTrait {
+trait RequestTrait  {
 
 
-    const BASE_URL = 'https://api.schwabapi.com/trader/v1';
+    //const BASE_URL = 'https://api.schwabapi.com/trader/v1';
 
 
     /**

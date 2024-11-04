@@ -10,6 +10,7 @@ use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 trait AccountRequests {
 
     use RequestTrait;
+    use UrlTraderTrait;
 
     /**
      * print_r() of $data

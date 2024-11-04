@@ -8,6 +8,7 @@ use Carbon\Carbon;
 trait PriceHistoryRequests {
 
     use RequestTrait;
+    use UrlMarketDataTrait;
 
 
     /**
