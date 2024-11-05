@@ -11,7 +11,7 @@ use Carbon\Carbon;
 trait QuoteRequests {
 
     use RequestTrait;
-    use UrlTraderTrait;
+
 
 
     /**
@@ -25,7 +25,7 @@ trait QuoteRequests {
     public function quotes( array $symbols = [],
                             array $fields = [],
                             bool  $indicative = FALSE ): array {
-        $suffix          = '/quotes';
+        $suffix          = '/trader/v1/quotes';
         $queryParameters = [];
         if ( $symbols ):
             $queryParameters[ 'symbols' ] = implode( ',', $symbols );
@@ -53,7 +53,7 @@ trait QuoteRequests {
     public function quotesBySymbol( string $symbol,
                                     array  $fields = [] ): array {
         $symbol          = strtoupper( $symbol );
-        $suffix          = $symbol . '/quotes';
+        $suffix          = '/trader/v1/' . $symbol . '/quotes';
         $queryParameters = [];
 
         if ( $fields ):

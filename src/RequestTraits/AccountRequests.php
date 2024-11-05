@@ -10,7 +10,7 @@ use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 trait AccountRequests {
 
     use RequestTrait;
-    use UrlTraderTrait;
+
 
     /**
      * print_r() of $data
@@ -20,7 +20,7 @@ trait AccountRequests {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function accountNumbers(): array {
-        $suffix = '/accounts/accountNumbers';
+        $suffix = '/trader/v1/accounts/accountNumbers';
         return $this->_request( $suffix );
     }
 
@@ -36,7 +36,7 @@ trait AccountRequests {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function accounts( bool $positions = FALSE ): array {
-        $suffix = '/accounts';
+        $suffix = '/trader/v1/accounts';
         if ( $positions ):
             $suffix .= '?fields=positions';
         endif;
@@ -51,7 +51,7 @@ trait AccountRequests {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function account( string $hashValueOfAccountNumber, array $fields = [] ): array {
-        $suffix = '/accounts/' . $hashValueOfAccountNumber;
+        $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber;
 
         if ( $fields ):
             $suffix .= '?' . http_build_query( $fields );

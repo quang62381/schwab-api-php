@@ -8,7 +8,7 @@ use Carbon\Carbon;
 trait PriceHistoryRequests {
 
     use RequestTrait;
-    use UrlMarketDataTrait;
+
 
 
     /**
@@ -113,7 +113,7 @@ trait PriceHistoryRequests {
                                   bool   $needExtendedHoursData = FALSE,
                                   bool   $needPreviousClose = FALSE
     ): array {
-        $suffix                                     = '/pricehistory';
+        $suffix                                     =  '/marketdata/v1/pricehistory';
         $queryParameters                            = [];
         $queryParameters[ 'symbol' ]                = $symbol;
         $queryParameters[ 'needExtendedHoursData' ] = $needExtendedHoursData;

@@ -8,7 +8,7 @@ use Carbon\Carbon;
 trait OrderRequests {
 
     use RequestTrait;
-    use UrlTraderTrait;
+
 
     const VALID_STATUSES = [
         'AWAITING_PARENT_ORDER',
@@ -50,7 +50,7 @@ trait OrderRequests {
                             Carbon $fromTime = NULL,
                             Carbon $toTime = NULL,
                             string $status = NULL ): array {
-        $suffix = self::URL_STEM . '/orders';
+        $suffix = '/trader/v1/orders';
 
         // This Exception is just to help Developers keep from getting confused or wasting time.
         if ( $fromTime xor $toTime ):
@@ -106,7 +106,7 @@ trait OrderRequests {
                                       Carbon $fromTime = NULL,
                                       Carbon $toTime = NULL,
                                       string $status = NULL ): array {
-        $suffix = '/accounts/' . $hashValueOfAccountNumber . '/orders';
+        $suffix =  '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
 
         // This Exception is just to help Developers keep from getting confused or wasting time.
         if ( $fromTime xor $toTime ):
@@ -152,7 +152,7 @@ trait OrderRequests {
      */
     public function orderForAccount( string $hashValueOfAccountNumber,
                                      int    $orderId ): array {
-        $suffix = '/accounts/' . $hashValueOfAccountNumber . '/orders/' . $orderId;
+        $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders/' . $orderId;
         return $this->_request( $suffix );
     }
 

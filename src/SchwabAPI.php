@@ -6,7 +6,6 @@ namespace MichaelDrennen\SchwabAPI;
 use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 use MichaelDrennen\SchwabAPI\RequestTraits\AccountRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\OrderRequests;
-use MichaelDrennen\SchwabAPI\RequestTraits\PriceHistoryRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\RequestTrait;
 
 
@@ -18,6 +17,10 @@ class SchwabAPI {
     use OrderRequests;
 
 
+    /**
+     * @var bool
+     */
+    protected bool $debug;
 
     /**
      * @var string
@@ -98,7 +101,6 @@ class SchwabAPI {
      * @param string      $apiSecret
      * @param string      $apiCallbackUrl
      * @param string|NULL $authenticationCode
-     * @param string|null $bearerToken
      * @param string|NULL $accessToken
      * @param string|NULL $refreshToken
      * @param bool        $debug
@@ -199,6 +201,19 @@ class SchwabAPI {
 
 
     /**
+     * The first step in authorizing your app to access your Schwab trading account, is to direct
+     * your user to the URL returned by this method.
+     *
+     * @url https://developer.schwab.com/products/trader-api--individual/details/documentation/Retail%20Trader%20API%20Production
+     *
+     * @return string
+     */
+    public function getAuthorizeUrl(): string {
+        return self::BASE_URL . '/v1/oauth/authorize?client_id=' . $this->apiKey . '&redirect_uri=' . $this->apiCallbackUrl;
+    }
+
+
+    /**
      * A simple getter for the accessToken.
      *
      * @return string
@@ -216,21 +231,6 @@ class SchwabAPI {
     public function getRefreshToken(): string {
         return $this->refreshToken;
     }
-
-
-    /**
-     * The first step in authorizing your app to access your Schwab trading account, is to direct
-     * your user to the URL returned by this method.
-     *
-     * @url https://developer.schwab.com/products/trader-api--individual/details/documentation/Retail%20Trader%20API%20Production
-     *
-     * @return string
-     */
-    public function getAuthorizeUrl(): string {
-        return 'https://api.schwabapi.com/v1/oauth/authorize?client_id=' . $this->apiKey . '&redirect_uri=' . $this->apiCallbackUrl;
-    }
-
-
     /**
      * @return int The number of seconds until the access token expires.
      */
