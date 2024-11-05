@@ -9,6 +9,28 @@ trait OrderRequests {
 
     use RequestTrait;
 
+    const AWAITING_PARENT_ORDER   = 'AWAITING_PARENT_ORDER';
+    const AWAITING_CONDITION      = 'AWAITING_CONDITION';
+    const AWAITING_STOP_CONDITION = 'AWAITING_STOP_CONDITION';
+    const AWAITING_MANUAL_REVIEW  = 'AWAITING_MANUAL_REVIEW';
+    const ACCEPTED                = 'ACCEPTED';
+    const AWAITING_UR_OUT         = 'AWAITING_UR_OUT';
+    const PENDING_ACTIVATION      = 'PENDING_ACTIVATION';
+    const QUEUED                  = 'QUEUED';
+    const WORKING                 = 'WORKING';
+    const REJECTED                = 'REJECTED';
+    const PENDING_CANCEL          = 'PENDING_CANCEL';
+    const CANCELED                = 'CANCELED';
+    const PENDING_REPLACE         = 'PENDING_REPLACE';
+    const REPLACED                = 'REPLACED';
+    const FILLED                  = 'FILLED';
+    const EXPIRED                 = 'EXPIRED';
+    const NEW                     = 'NEW';
+    const AWAITING_RELEASE_TIME   = 'AWAITING_RELEASE_TIME';
+    const PENDING_ACKNOWLEDGEMENT = 'PENDING_ACKNOWLEDGEMENT';
+    const PENDING_RECALL          = 'PENDING_RECALL';
+    const UNKNOWN                 = 'UNKNOWN';
+
 
     const VALID_STATUSES = [
         'AWAITING_PARENT_ORDER',
@@ -38,17 +60,17 @@ trait OrderRequests {
     /**
      * Get all ORDERS from all ACCOUNTS
      *
-     * @param int|NULL            $maxResults
      * @param \Carbon\Carbon|NULL $fromTime
      * @param \Carbon\Carbon|NULL $toTime
+     * @param int|NULL            $maxResults
      * @param string|NULL         $status
      *
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function orders( int    $maxResults = NULL,
-                            Carbon $fromTime = NULL,
+    public function orders( Carbon $fromTime = NULL,
                             Carbon $toTime = NULL,
+                            int    $maxResults = NULL,
                             string $status = NULL ): array {
         $suffix = '/trader/v1/orders';
 
@@ -59,13 +81,9 @@ trait OrderRequests {
 
         $queryParameters = [];
 
-        if ( $maxResults ):
-            $queryParameters[ 'maxResults' ] = $maxResults;
-        endif;
-
         if ( $fromTime && $toTime ):
             $queryParameters[ 'fromEnteredTime' ] = $fromTime->toIso8601String();
-            $queryParameters[ 'toEnteredTime' ]   = $fromTime->toIso8601String();
+            $queryParameters[ 'toEnteredTime' ]   = $toTime->toIso8601String();
         endif;
 
         if ( $status ):
@@ -77,11 +95,14 @@ trait OrderRequests {
             $queryParameters[ 'status' ] = $status;
         endif;
 
+        if ( $maxResults ):
+            $queryParameters[ 'maxResults' ] = $maxResults;
+        endif;
+
         if ( $queryParameters ):
             $suffix .= '?' . http_build_query( $queryParameters );
         endif;
 
-        // https://api.schwabapi.com/trader/v1/orders?fromEnteredTime=2024-11-01T00%3A00%3A00%2B00%3A00&toEnteredTime=2024-11-30T00%3A00%3A00%2B00%3A00
         return $this->_request( $suffix );
     }
 
@@ -106,7 +127,7 @@ trait OrderRequests {
                                       Carbon $fromTime = NULL,
                                       Carbon $toTime = NULL,
                                       string $status = NULL ): array {
-        $suffix =  '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
+        $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
 
         // This Exception is just to help Developers keep from getting confused or wasting time.
         if ( $fromTime xor $toTime ):
@@ -121,7 +142,7 @@ trait OrderRequests {
 
         if ( $fromTime && $toTime ):
             $queryParameters[ 'fromEnteredTime' ] = $fromTime->toIso8601String();
-            $queryParameters[ 'toEnteredTime' ]   = $fromTime->toIso8601String();
+            $queryParameters[ 'toEnteredTime' ]   = $toTime->toIso8601String();
         endif;
 
         if ( $status ):

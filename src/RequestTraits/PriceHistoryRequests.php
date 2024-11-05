@@ -208,13 +208,6 @@ trait PriceHistoryRequests {
         if ( $frequencyType ):
             $frequencyType = strtolower( $frequencyType );
 
-            //dump( $frequencyType );
-            //dump( $periodType );
-            //dump( self::FREQUENCY_TYPES );
-            //dump( array_keys( self::FREQUENCY_TYPES ) );
-            //flush();
-            //die( 'test' );
-
             if ( !array_key_exists( $frequencyType, self::FREQUENCY_TYPES ) ):
                 throw new \Exception( "The frequencyType you passed in '" . $frequencyType . "', was not in the list of valid FREQUENCY_TYPES: " . implode( ', ', array_keys( self::FREQUENCY_TYPES ) ) );
             endif;

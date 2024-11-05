@@ -2,17 +2,12 @@
 
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
-use Carbon\Carbon;
-
-
 /**
  * @url https://developer.schwab.com/products/trader-api--individual/details/specifications/Market%20Data%20Production
  */
 trait QuoteRequests {
 
     use RequestTrait;
-
-
 
     /**
      * @param array $symbols    Comma separated list of symbol(s) to look up a quote
@@ -25,7 +20,7 @@ trait QuoteRequests {
     public function quotes( array $symbols = [],
                             array $fields = [],
                             bool  $indicative = FALSE ): array {
-        $suffix          = '/trader/v1/quotes';
+        $suffix          = '/marketdata/v1/quotes';
         $queryParameters = [];
         if ( $symbols ):
             $queryParameters[ 'symbols' ] = implode( ',', $symbols );
@@ -53,7 +48,7 @@ trait QuoteRequests {
     public function quotesBySymbol( string $symbol,
                                     array  $fields = [] ): array {
         $symbol          = strtoupper( $symbol );
-        $suffix          = '/trader/v1/' . $symbol . '/quotes';
+        $suffix          = '/marketdata/v1/' . $symbol . '/quotes';
         $queryParameters = [];
 
         if ( $fields ):
@@ -64,6 +59,4 @@ trait QuoteRequests {
 
         return $this->_request( $suffix );
     }
-
-
 }
