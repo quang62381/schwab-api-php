@@ -10,7 +10,6 @@ trait PriceHistoryRequests {
     use RequestTrait;
 
 
-
     /**
      * Valid period types are the keys. Valid periods are the array values.
      */
@@ -33,17 +32,24 @@ trait PriceHistoryRequests {
      * Valid frequency types are they keys. Valid frequencies are the array values.
      */
     const FREQUENCY_TYPES = [
+        'minute'  => [ 1, 5, 10, 15, 30 ],
+        'daily'   => [ 1 ],
+        'weekly'  => [ 1 ],
+        'monthly' => [ 1 ],
+    ];
+
+    const DEFAULT_FREQUENCIES = [
+        'minute'  => 1,
+        'daily'   => 1,
+        'weekly'  => 1,
+        'monthly' => 1,
+    ];
+
+    const VALID_FREQUENCY_TYPES_BY_PERIOD = [
         'day'   => [ 'minute' ],
         'month' => [ 'daily', 'weekly' ],
         'year'  => [ 'daily', 'weekly', 'monthly' ],
         'ytd'   => [ 'daily', 'weekly' ],
-    ];
-
-    const DEFAULT_FREQUENCIES = [
-        'day'   => 'minute',
-        'month' => 'weekly',
-        'year'  => 'monthly',
-        'ytd'   => 'weekly',
     ];
 
 
@@ -94,7 +100,7 @@ trait PriceHistoryRequests {
      * • year - defaulted to monthly.
      * • ytd - defaulted to weekly.
      *
-     * $this->>frequency
+     * $this->frequency
      * If the frequencyType is
      * • minute - valid values are 1, 5, 10, 15, 30
      * • daily - valid value is 1
@@ -113,7 +119,7 @@ trait PriceHistoryRequests {
                                   bool   $needExtendedHoursData = FALSE,
                                   bool   $needPreviousClose = FALSE
     ): array {
-        $suffix                                     =  '/marketdata/v1/pricehistory';
+        $suffix                                     = '/marketdata/v1/pricehistory';
         $queryParameters                            = [];
         $queryParameters[ 'symbol' ]                = $symbol;
         $queryParameters[ 'needExtendedHoursData' ] = $needExtendedHoursData;
@@ -175,7 +181,7 @@ trait PriceHistoryRequests {
         if ( $periodType ):
             $periodType = strtolower( $periodType );
             if ( !array_key_exists( $periodType, self::PERIOD_TYPES ) ):
-                throw new \Exception( "The periodType you passed in '" . $periodType . "', was not in the list of valid PERIOD_TYPES: " . implode( ', ', self::PERIOD_TYPES ) );
+                throw new \Exception( "The periodType you passed in '" . $periodType . "', was not in the list of valid PERIOD_TYPES: " . implode( ', ', array_keys( self::PERIOD_TYPES ) ) );
             endif;
 
             if ( $period && !in_array( $period, self::PERIOD_TYPES[ $periodType ] ) ):
@@ -183,10 +189,34 @@ trait PriceHistoryRequests {
             endif;
         endif;
 
+        // If Period Type is specified by the caller, but Frequency Type is NOT, then
+        // default values for Frequency Type are set according to the documentiation
+        // on Schwab's API.
+        if ( $periodType && is_null( $frequencyType ) ):
+            switch ( $periodType ):
+                case 'day':
+                    $frequencyType = 'minute';
+                case 'month':
+                    $frequencyType = 'weekly';
+                case 'year':
+                    $frequencyType = 'monthly';
+                case 'ytd':
+                    $frequencyType = 'weekly';
+            endswitch;
+        endif;
+
         if ( $frequencyType ):
             $frequencyType = strtolower( $frequencyType );
+
+            //dump( $frequencyType );
+            //dump( $periodType );
+            //dump( self::FREQUENCY_TYPES );
+            //dump( array_keys( self::FREQUENCY_TYPES ) );
+            //flush();
+            //die( 'test' );
+
             if ( !array_key_exists( $frequencyType, self::FREQUENCY_TYPES ) ):
-                throw new \Exception( "The frequencyType you passed in '" . $frequencyType . "', was not in the list of valid FREQUENCY_TYPES: " . implode( ', ', self::FREQUENCY_TYPES ) );
+                throw new \Exception( "The frequencyType you passed in '" . $frequencyType . "', was not in the list of valid FREQUENCY_TYPES: " . implode( ', ', array_keys( self::FREQUENCY_TYPES ) ) );
             endif;
 
             if ( $frequency && !in_array( $frequency, self::FREQUENCY_TYPES[ $frequencyType ] ) ):
@@ -194,11 +224,16 @@ trait PriceHistoryRequests {
             endif;
         endif;
 
-        if ( $startDate && $endDate && $startDate->gt( $endDate ) ):
-            throw new \Exception( "You passed in startDate and endDate, but startDate was greater than endDate: " . $startDate->toDateString() . '>' . $endDate->toDateString() );
+        // There are only certain frequency types that are valid for a given period type.
+        // Error check for that below.
+        if ( !in_array( $frequencyType, self::VALID_FREQUENCY_TYPES_BY_PERIOD[ $periodType ] ) ):
+            throw new \Exception( "You entered a periodType of " . $periodType . " and a frequencyType of " . $frequencyType . ". The only valid frequencyTypes for that periodType are " . implode( ', ', self::VALID_FREQUENCY_TYPES_BY_PERIOD[ $periodType ] ) );
         endif;
 
 
+        if ( $startDate && $endDate && $startDate->gt( $endDate ) ):
+            throw new \Exception( "You passed in startDate and endDate, but startDate was greater than endDate: " . $startDate->toDateString() . '>' . $endDate->toDateString() );
+        endif;
     }
 
 }
