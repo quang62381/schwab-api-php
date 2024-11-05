@@ -5,8 +5,9 @@ namespace MichaelDrennen\SchwabAPI\RequestTraits;
 use GuzzleHttp\Client;
 
 
-trait RequestTrait  {
+trait RequestTrait {
 
+    const BASE_URL = "https://api.schwabapi.com";
 
     /**
      * @var \GuzzleHttp\Client The Guzzle HTTP client, so I can make requests to the Schwab API.
@@ -48,7 +49,8 @@ trait RequestTrait  {
     protected function _request( string $urlSuffix, string $method = 'GET' ): array {
         $method = strtoupper( $method );
 
-        $url     = self::BASE_URL . $urlSuffix;
+        $url = self::BASE_URL . $urlSuffix;
+
         $options = [
             'headers' => [
                 'Authorization' => "Bearer " . $this->accessToken,

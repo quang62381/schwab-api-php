@@ -17,7 +17,6 @@ class SchwabAPI {
     use AccountRequests;
     use OrderRequests;
 
-    use PriceHistoryRequests;
 
 
     /**

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 trait OrderRequests {
 
     use RequestTrait;
+    use UrlTraderTrait;
 
     const VALID_STATUSES = [
         'AWAITING_PARENT_ORDER',
@@ -49,7 +50,7 @@ trait OrderRequests {
                             Carbon $fromTime = NULL,
                             Carbon $toTime = NULL,
                             string $status = NULL ): array {
-        $suffix = '/orders';
+        $suffix = self::URL_STEM . '/orders';
 
         // This Exception is just to help Developers keep from getting confused or wasting time.
         if ( $fromTime xor $toTime ):
@@ -142,8 +143,9 @@ trait OrderRequests {
 
     /**
      * Get a specific order by its ID, for a specific account
-     * @param string              $hashValueOfAccountNumber
-     * @param int                 $orderId
+     *
+     * @param string $hashValueOfAccountNumber
+     * @param int    $orderId
      *
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
