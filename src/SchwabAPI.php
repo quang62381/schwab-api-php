@@ -6,6 +6,7 @@ namespace MichaelDrennen\SchwabAPI;
 use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 use MichaelDrennen\SchwabAPI\RequestTraits\AccountRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\OrderRequests;
+use MichaelDrennen\SchwabAPI\RequestTraits\PriceHistoryRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\RequestTrait;
 
 
@@ -15,6 +16,7 @@ class SchwabAPI {
     use RequestTrait;
     use AccountRequests;
     use OrderRequests;
+    use PriceHistoryRequests;
 
 
     /**
