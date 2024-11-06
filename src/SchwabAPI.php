@@ -5,6 +5,7 @@ namespace MichaelDrennen\SchwabAPI;
 
 use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 use MichaelDrennen\SchwabAPI\RequestTraits\AccountRequests;
+use MichaelDrennen\SchwabAPI\RequestTraits\InstrumentsRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\MarketHoursRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\MoversRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\OptionChainsRequests;
@@ -27,6 +28,7 @@ class SchwabAPI {
     use OptionExpirationChainRequests;
     use MoversRequests;
     use MarketHoursRequests;
+    use InstrumentsRequests;
 
 
     /**

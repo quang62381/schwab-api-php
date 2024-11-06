@@ -31,7 +31,7 @@ trait InstrumentsRequests {
      * @throws \Exception
      */
     public function instruments( string $symbol, string $projection ): array {
-        $suffix = '/trader/v1/instruments';
+        $suffix = '/marketdata/v1/instruments';
 
         $projection = strtolower( $projection );
 
@@ -57,7 +57,7 @@ trait InstrumentsRequests {
      */
     public function instrumentByCusip( string $cusip ): array {
         $cusip = strtoupper( $cusip );
-        $suffix = '/trader/v1/instruments/' . $cusip;
+        $suffix = '/marketdata/v1/instruments/' . $cusip;
         return $this->_request( $suffix );
     }
 
