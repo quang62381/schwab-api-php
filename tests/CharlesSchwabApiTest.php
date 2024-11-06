@@ -58,4 +58,14 @@ class CharlesSchwabApiTest extends TestCase {
     public function testGetTokenShouldGetToken() {
         $token = $this->api->requestToken();
     }
+
+    /**
+     * @test
+     * @group markets
+     */
+    public function testInvalidMarketHoursSymbolShouldThrowException() {
+        $this->expectException(\Exception::class);
+
+        $this->api->markets(['equity']);
+    }
 }

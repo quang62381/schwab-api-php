@@ -5,7 +5,7 @@ namespace MichaelDrennen\SchwabAPI\RequestTraits;
 /**
  * @url https://developer.schwab.com/products/trader-api--individual/details/specifications/Market%20Data%20Production
  */
-trait QuoteRequests {
+trait QuotesRequests {
 
     use RequestTrait;
 
