@@ -47,7 +47,9 @@ trait RequestTrait {
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function _request( string $urlSuffix, string $method = 'GET', array $additionalHeaders = [] ): array {
+    protected function _request( string $urlSuffix,
+                                 string $method = 'GET',
+                                 array  $additionalHeaders = [] ): array {
         $method = strtoupper( $method );
 
         $url = self::BASE_URL . $urlSuffix;

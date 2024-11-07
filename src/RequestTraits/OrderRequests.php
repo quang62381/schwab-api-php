@@ -3,6 +3,7 @@
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
 use Carbon\Carbon;
+use MichaelDrennen\SchwabAPI\Schemas\CreatePayloadEquity;
 
 
 trait OrderRequests {
@@ -175,6 +176,42 @@ trait OrderRequests {
                                      int    $orderId ): array {
         $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders/' . $orderId;
         return $this->_request( $suffix );
+    }
+
+
+    /**
+     * @param string $hashValueOfAccountNumber
+     * @param string $symbol
+     * @param int    $quantity
+     *
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function placeBuyOrder( string $hashValueOfAccountNumber, string $symbol, int $quantity ): array {
+        $payload = CreatePayloadEquity::createBuy( $symbol, $quantity );
+        $suffix  = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
+
+        return $this->_request( $suffix,
+                                'POST',
+                                [ 'body' => $payload ] );
+    }
+
+
+    /**
+     * @param string $hashValueOfAccountNumber
+     * @param string $symbol
+     * @param int    $quantity
+     *
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function placeSellOrder( string $hashValueOfAccountNumber, string $symbol, int $quantity ): array {
+        $payload = CreatePayloadEquity::createSell( $symbol, $quantity );
+        $suffix  = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
+
+        return $this->_request( $suffix,
+                                'POST',
+                                [ 'body' => $payload ] );
     }
 
 }
