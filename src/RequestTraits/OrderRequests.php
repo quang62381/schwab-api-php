@@ -3,7 +3,7 @@
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
 use Carbon\Carbon;
-use MichaelDrennen\SchwabAPI\Schemas\CreatePayloadEquity;
+use MichaelDrennen\SchwabAPI\SimpleActions\CreatePayloadEquity;
 
 
 trait OrderRequests {
