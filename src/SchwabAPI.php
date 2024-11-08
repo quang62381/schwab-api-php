@@ -14,6 +14,7 @@ use MichaelDrennen\SchwabAPI\RequestTraits\OrderRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\PriceHistoryRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\QuotesRequests;
 use MichaelDrennen\SchwabAPI\RequestTraits\RequestTrait;
+use MichaelDrennen\SchwabAPI\RequestTraits\UserPreferenceRequests;
 
 
 class SchwabAPI {
@@ -29,6 +30,7 @@ class SchwabAPI {
     use MoversRequests;
     use MarketHoursRequests;
     use InstrumentsRequests;
+    use UserPreferenceRequests;
 
 
     /**
