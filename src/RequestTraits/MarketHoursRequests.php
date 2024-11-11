@@ -72,15 +72,35 @@ trait MarketHoursRequests {
     }
 
 
-
     public function getNextOpenDateForMarket( string $marketId, string $timezone = 'America/New_York' ): Carbon {
-        $date = Carbon::today( $timezone );
-        $isOpen    = FALSE;
+
+        $maxAttempts = 10;
+        $attempt     = 0;
+        $date        = Carbon::today( $timezone );
+        $isOpen      = FALSE;
         while ( FALSE == $isOpen ):
+            $attempt++;
+            /**
+             * Array (
+             * [equity] => Array (
+             * [equity] => Array (
+             * [date] => 2024-11-10
+             * [marketType] => EQUITY
+             * [product] => equity
+             * [isOpen] =>
+             * )
+             * )
+             * )
+             */
             $marketData = $this->marketsById( $marketId, $date );
-            print_r($marketData);
-            $isOpen = TRUE;
-            //$isOpen = $marketData['']
+
+            $isOpen = $marketData[ $marketId ][ $marketId ][ 'isOpen' ];
+
+            if ( $attempt >= $maxAttempts ):
+                throw new \Exception( "Check your code. You should have found a date where the market was open." );
+            endif;
+
+            $date = $date->copy()->addDay();
         endwhile;
 
         return $date;
