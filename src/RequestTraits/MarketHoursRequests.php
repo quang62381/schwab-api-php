@@ -58,17 +58,32 @@ trait MarketHoursRequests {
         $marketId = strtolower( $marketId );
         $suffix   = '/marketdata/v1/markets/' . $marketId;
 
-        $queryParameters              = [];
+        $queryParameters = [];
 
         if ( $date ):
             $queryParameters[ 'date' ] = $date->toDateString();
         endif;
 
-        $this->_throwExceptionIfInvalidParameters( [$marketId] );
+        $this->_throwExceptionIfInvalidParameters( [ $marketId ] );
 
         $suffix .= '?' . http_build_query( $queryParameters );
 
         return $this->_request( $suffix );
+    }
+
+
+
+    public function getNextOpenDateForMarket( string $marketId, string $timezone = 'America/New_York' ): Carbon {
+        $date = Carbon::today( $timezone );
+        $isOpen    = FALSE;
+        while ( FALSE == $isOpen ):
+            $marketData = $this->marketsById( $marketId, $date );
+            print_r($marketData);
+            $isOpen = TRUE;
+            //$isOpen = $marketData['']
+        endwhile;
+
+        return $date;
     }
 
 

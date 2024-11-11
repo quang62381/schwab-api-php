@@ -25,6 +25,7 @@ class CharlesSchwabApiTest extends TestCase {
 
     protected SchwabAPI $api;
 
+
     protected function setUp(): void {
 
         $this->code     = $_ENV[ 'CODE' ];
@@ -39,9 +40,10 @@ class CharlesSchwabApiTest extends TestCase {
                                     $apiCallbackUri,
                                     $this->code,
                                     NULL,
-                                    true );
+                                    TRUE );
 
     }
+
 
     /**
      * @test
@@ -51,6 +53,7 @@ class CharlesSchwabApiTest extends TestCase {
         $this->assertInstanceOf( SchwabAPI::class, $this->api );
     }
 
+
     /**
      * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -59,13 +62,23 @@ class CharlesSchwabApiTest extends TestCase {
         $token = $this->api->requestToken();
     }
 
+
     /**
      * @test
      * @group markets
      */
     public function testInvalidMarketHoursSymbolShouldThrowException() {
-        $this->expectException(\Exception::class);
+        $this->expectException( \Exception::class );
 
-        $this->api->markets(['equity']);
+        $this->api->markets( [ 'equity' ] );
+    }
+
+    /**
+     * @test
+     * @group next
+     */
+    public function testGetNextOpenDate() {
+        $carbonDate = $this->api->getNextOpenDateForMarket( 'equity' );
+
     }
 }
