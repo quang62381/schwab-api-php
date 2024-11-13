@@ -18,14 +18,14 @@ class CreatePayloadEquity {
             'session'            => 'NORMAL',
             'duration'           => 'DAY',
             'orderStrategyType'  => 'SINGLE',
-            'orderLegCollection' => [
-                'instruction' => 'BUY',
-                'quantity'    => $quantity,
-                'instrument'  => [
-                    'symbol'    => $symbol,
-                    'assetType' => 'EQUITY',
-                ],
-            ],
+            'orderLegCollection' => [ [
+                                          'instruction' => 'BUY',
+                                          'quantity'    => $quantity,
+                                          'instrument'  => [
+                                              'symbol'    => $symbol,
+                                              'assetType' => 'EQUITY',
+                                          ],
+                                      ], ],
         ];
 
         return json_encode( $payload );
