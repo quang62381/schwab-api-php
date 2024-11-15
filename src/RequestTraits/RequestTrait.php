@@ -42,13 +42,14 @@ trait RequestTrait {
     /**
      * @param string $urlSuffix
      * @param string $method
-     * @param array  $additionalHeaders
+     * @param array  $additionalOptions
      *
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function _request( string $urlSuffix,
                                  string $method = 'GET',
+                                 array  $additionalOptions = [],
                                  array  $additionalHeaders = [] ): array {
         $method = strtoupper( $method );
 
@@ -65,17 +66,25 @@ trait RequestTrait {
             $options[ 'headers' ][ $header ] = $value;
         endforeach;
 
+        $options = array_merge( $options, $additionalOptions );
+
         if ( 'POST' == $method ):
-            $response = $this->client->post( $url, $options );
+            $options[ 'headers' ][ 'Content-Type' ] = 'application/json';
+            $response                               = $this->client->post( $url, $options );
         else:
             $response = $this->client->get( $url, $options );
         endif;
 
         $json = $response->getBody()->getContents();
 
+        $code = $response->getStatusCode();
+
         $data = json_decode( $json, TRUE );
 
-        return $data;
+        return [
+            'code' => $code,
+            'data' => $data,
+        ];
     }
 
 }

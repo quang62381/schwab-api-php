@@ -189,11 +189,13 @@ trait OrderRequests {
      */
     public function placeBuyOrder( string $hashValueOfAccountNumber, string $symbol, int $quantity ): array {
         $payload = CreatePayloadEquity::createBuy( $symbol, $quantity );
-        $suffix  = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
+
+        $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
 
         return $this->_request( $suffix,
                                 'POST',
-                                [ 'body' => $payload ] );
+                                [ 'body' => $payload ],
+                                [] );
     }
 
 
@@ -211,7 +213,8 @@ trait OrderRequests {
 
         return $this->_request( $suffix,
                                 'POST',
-                                [ 'body' => $payload ] );
+                                [ 'body' => $payload ],
+                                [] );
     }
 
 }
