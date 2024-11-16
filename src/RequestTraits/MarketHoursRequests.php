@@ -48,10 +48,17 @@ trait MarketHoursRequests {
 
 
     /**
-     * @param string              $marketId
+     * @param string              $marketId Ex: equity
      * @param \Carbon\Carbon|NULL $date
      *
      * @return array
+     * "equity" => array:1 [▼
+     *      "equity" => array:4 [▼
+     *      "date" => "2024-11-16"
+     *      "marketType" => "EQUITY"
+     *      "product" => "equity"
+     *      "isOpen" => false
+     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */

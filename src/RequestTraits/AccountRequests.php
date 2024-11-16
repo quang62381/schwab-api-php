@@ -2,10 +2,6 @@
 
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
-use Carbon\Carbon;
-use GuzzleHttp\Client;
-use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
-
 trait AccountRequests {
 
     use RequestTrait;
