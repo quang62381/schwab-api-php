@@ -6,22 +6,22 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use MichaelDrennen\SchwabAPI\Exceptions\RequestException;
 
-
 trait AccountRequests {
 
     use RequestTrait;
 
 
     /**
+     * @return array
      * print_r() of $data
      * Array ( [0] => Array ( [accountNumber] => 27834695236 [hashValue] => 397465203847059238764059762304 ) [1] => Array ( [accountNumber] => 08347502745 [hashValue] => A34502983740527304857203947580A535A67529CC ) )
      * The 'hashValue' is the 'encrypted' accountNumber that is used in all other REQUESTS to the Schwab API system.
-     *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function accountNumbers(): array {
-        $suffix = '/trader/v1/accounts/accountNumbers';
-        return $this->_request( $suffix );
+        $suffix   = '/trader/v1/accounts/accountNumbers';
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
@@ -40,8 +40,10 @@ trait AccountRequests {
         if ( $positions ):
             $suffix .= '?fields=positions';
         endif;
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
+
 
     /**
      * @param string $hashValueOfAccountNumber This hash value is returned by the '/accounts/accountNumbers' endpoint. Ex: E49D5746FD010E582E364C28E9D6A763D972C3A0C0C90170878260D0A6C65453
@@ -57,7 +59,7 @@ trait AccountRequests {
             $suffix .= '?' . http_build_query( $fields );
         endif;
 
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
-
 }

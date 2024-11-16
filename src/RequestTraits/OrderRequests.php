@@ -104,7 +104,8 @@ trait OrderRequests {
             $suffix .= '?' . http_build_query( $queryParameters );
         endif;
 
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
@@ -159,7 +160,8 @@ trait OrderRequests {
             $suffix .= '?' . http_build_query( $queryParameters );
         endif;
 
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
@@ -174,8 +176,9 @@ trait OrderRequests {
      */
     public function orderForAccount( string $hashValueOfAccountNumber,
                                      int    $orderId ): array {
-        $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders/' . $orderId;
-        return $this->_request( $suffix );
+        $suffix   = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders/' . $orderId;
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
@@ -184,18 +187,21 @@ trait OrderRequests {
      * @param string $symbol
      * @param int    $quantity
      *
-     * @return array
+     * @return int
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function placeBuyOrder( string $hashValueOfAccountNumber, string $symbol, int $quantity ): array {
+    public function placeBuyOrder( string $hashValueOfAccountNumber,
+                                   string $symbol,
+                                   int    $quantity ): int {
         $payload = CreatePayloadEquity::createBuy( $symbol, $quantity );
 
         $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
 
-        return $this->_request( $suffix,
-                                'POST',
-                                [ 'body' => $payload ],
-                                [] );
+
+        $response = $this->_request( $suffix, 'POST',
+                                     [ 'body' => $payload ],
+                                     [] );
+        return $this->responseCode( $response );
     }
 
 
@@ -204,17 +210,19 @@ trait OrderRequests {
      * @param string $symbol
      * @param int    $quantity
      *
-     * @return array
+     * @return int
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function placeSellOrder( string $hashValueOfAccountNumber, string $symbol, int $quantity ): array {
+    public function placeSellOrder( string $hashValueOfAccountNumber,
+                                    string $symbol,
+                                    int    $quantity ): int {
         $payload = CreatePayloadEquity::createSell( $symbol, $quantity );
         $suffix  = '/trader/v1/accounts/' . $hashValueOfAccountNumber . '/orders';
 
-        return $this->_request( $suffix,
-                                'POST',
-                                [ 'body' => $payload ],
-                                [] );
+        $response = $this->_request( $suffix, 'POST',
+                                     [ 'body' => $payload ],
+                                     [] );
+        return $this->responseCode( $response );
     }
 
 }

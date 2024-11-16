@@ -3,6 +3,7 @@
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 
 
 trait RequestTrait {
@@ -44,13 +45,13 @@ trait RequestTrait {
      * @param string $method
      * @param array  $additionalOptions
      *
-     * @return array
+     * @return \GuzzleHttp\Psr7\Response
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function _request( string $urlSuffix,
                                  string $method = 'GET',
                                  array  $additionalOptions = [],
-                                 array  $additionalHeaders = [] ): array {
+                                 array  $additionalHeaders = [] ): \GuzzleHttp\Psr7\Response {
         $method = strtoupper( $method );
 
         $url = self::BASE_URL . $urlSuffix;
@@ -70,21 +71,31 @@ trait RequestTrait {
 
         if ( 'POST' == $method ):
             $options[ 'headers' ][ 'Content-Type' ] = 'application/json';
-            $response                               = $this->client->post( $url, $options );
+            return $this->client->post( $url, $options );
         else:
-            $response = $this->client->get( $url, $options );
+            return $this->client->get( $url, $options );
         endif;
+    }
 
-        $json = $response->getBody()->getContents();
 
-        $code = $response->getStatusCode();
+    /**
+     * @param \GuzzleHttp\Psr7\Response $response
+     *
+     * @return array
+     */
+    public function json(Response $response): array {
+        $responseContents = $response->getBody()->getContents();
+        return json_decode( $responseContents, true );
+    }
 
-        $data = json_decode( $json, TRUE );
 
-        return [
-            'code' => $code,
-            'data' => $data,
-        ];
+    /**
+     * @param \GuzzleHttp\Psr7\Response $response
+     *
+     * @return int
+     */
+    public function responseCode(Response $response): int {
+        return $response->getStatusCode();
     }
 
 }
