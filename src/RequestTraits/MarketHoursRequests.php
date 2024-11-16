@@ -81,6 +81,13 @@ trait MarketHoursRequests {
     }
 
 
+    /**
+     * @param string $marketId
+     * @param string $timezone
+     *
+     * @return \Carbon\Carbon
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function getNextOpenDateForMarket( string $marketId, string $timezone = 'America/New_York' ): Carbon {
 
         $maxAttempts = 10;
