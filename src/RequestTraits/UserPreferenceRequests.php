@@ -11,7 +11,8 @@ trait UserPreferenceRequests {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function userPreference(): array {
-        $suffix = '/trader/v1/userPreference';
-        return $this->_request( $suffix );
+        $suffix   = '/trader/v1/userPreference';
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 }

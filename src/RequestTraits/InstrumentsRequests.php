@@ -44,7 +44,8 @@ trait InstrumentsRequests {
         endif;
 
         $suffix .= '?' . http_build_query( $queryParameters );
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
@@ -58,7 +59,8 @@ trait InstrumentsRequests {
     public function instrumentByCusip( string $cusip ): array {
         $cusip = strtoupper( $cusip );
         $suffix = '/marketdata/v1/instruments/' . $cusip;
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 

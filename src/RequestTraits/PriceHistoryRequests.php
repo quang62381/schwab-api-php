@@ -157,7 +157,8 @@ trait PriceHistoryRequests {
         $suffix .= '?' . http_build_query( $queryParameters );
 
         //https://api.schwabapi.com/trader/v1/pricehistory?symbol=AAPL&needExtendedHoursData=0&needPreviousClose=0
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 

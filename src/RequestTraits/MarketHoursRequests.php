@@ -42,7 +42,8 @@ trait MarketHoursRequests {
 
         $suffix .= '?' . http_build_query( $queryParameters );
 
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
@@ -68,7 +69,8 @@ trait MarketHoursRequests {
 
         $suffix .= '?' . http_build_query( $queryParameters );
 
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 

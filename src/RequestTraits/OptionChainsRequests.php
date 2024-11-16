@@ -160,7 +160,8 @@ trait OptionChainsRequests {
             $suffix .= '?' . http_build_query( $queryParameters );
         endif;
 
-        return $this->_request( $suffix );
+        $response = $this->_request( $suffix );
+        return $this->json( $response );
     }
 
 
