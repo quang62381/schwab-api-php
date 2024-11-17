@@ -9,6 +9,9 @@ trait MarketHoursRequests {
 
     use RequestTrait;
 
+    // marketId values: Ex: equity
+    const equity = 'equity';
+
     const MARKETS = [
         'equity',
         'option',
@@ -82,7 +85,7 @@ trait MarketHoursRequests {
 
 
     /**
-     * @param string $marketId
+     * @param string $marketId Ex: equity
      * @param string $timezone
      *
      * @return \Carbon\Carbon
