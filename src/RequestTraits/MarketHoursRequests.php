@@ -182,6 +182,18 @@ trait MarketHoursRequests {
     public function getNextSessionTimes( string $marketId, string $subMarketId, string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): array {
         $carbonDate = $this->getNextOpenDateForMarket( $marketId, $subMarketId, $timezone );
         $marketData = $this->marketsById( $marketId, $carbonDate );
+
+        // Created $sessionHours just to make the next few lines shorter.
+        $sessionHours = $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
+
+        // Convert the timestamps to Carbon objects.
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'start' ]     = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'end' ]       = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'end' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'start' ] = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'end' ]   = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'end' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'start' ]    = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'end' ]      = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'end' ], $timezone );
+
         return $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
     }
 
