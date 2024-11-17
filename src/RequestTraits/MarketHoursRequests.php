@@ -4,6 +4,7 @@ namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
 use App\Console\Kernel;
 use Carbon\Carbon;
+use MichaelDrennen\SchwabAPI\SchwabAPI;
 
 
 trait MarketHoursRequests {
@@ -104,7 +105,7 @@ trait MarketHoursRequests {
      */
     public function getNextOpenDateForMarket( string $marketId,
                                               string $subMarketId = NULL,
-                                              string $timezone = 'America/New_York' ): Carbon {
+                                              string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
 
         $maxAttempts = 10;
         $attempt     = 0;
@@ -157,9 +158,9 @@ trait MarketHoursRequests {
 
 
     /**
-     * @param string $marketId Ex: equity
+     * @param string $marketId    Ex: equity
      * @param string $subMarketId Ex: EQ
-     * @param string $timezone Ex: America/New_York
+     * @param string $timezone    Ex: America/New_York
      *
      * @return array Ex:
      * Array(
@@ -178,7 +179,7 @@ trait MarketHoursRequests {
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getNextSessionTimes( string $marketId, string $subMarketId, string $timezone = 'America/New_York' ): array {
+    public function getNextSessionTimes( string $marketId, string $subMarketId, string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): array {
         $carbonDate = $this->getNextOpenDateForMarket( $marketId, $subMarketId, $timezone );
         $marketData = $this->marketsById( $marketId, $carbonDate );
         return $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];

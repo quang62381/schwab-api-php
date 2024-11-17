@@ -112,6 +112,9 @@ class SchwabAPI {
     // END PROPERTIES THAT ARE SET FROM $this->requestToken()
 
 
+    const DEFAULT_TIMEZONE = 'America/New_York';
+
+
     /**
      * @param string      $apiKey
      * @param string      $apiSecret
@@ -137,7 +140,7 @@ class SchwabAPI {
         $this->refreshToken   = $refreshToken;
         $this->debug          = $debug;
 
-        $this->client = $this->createGuzzleClient($this->accessToken, $this->debug);
+        $this->client = $this->createGuzzleClient( $this->accessToken, $this->debug );
     }
 
 
@@ -247,6 +250,7 @@ class SchwabAPI {
     public function getRefreshToken(): string {
         return $this->refreshToken;
     }
+
     /**
      * @return int The number of seconds until the access token expires.
      */
