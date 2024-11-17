@@ -11,13 +11,17 @@ trait MarketHoursRequests {
 
     // marketId values: Ex: equity
     const equity = 'equity';
+    const option = 'option';
+    const bond   = 'bond';
+    const future = 'future';
+    const forex  = 'forex';
 
     const MARKETS = [
-        'equity',
-        'option',
-        'bond',
-        'future',
-        'forex',
+        self::equity,
+        self::option,
+        self::bond,
+        self::future,
+        self::forex,
     ];
 
 
