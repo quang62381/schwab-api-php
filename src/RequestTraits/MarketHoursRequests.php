@@ -185,7 +185,10 @@ trait MarketHoursRequests {
                                          string $subMarketId,
                                          Carbon $anchorDate = NULL,
                                          string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): array {
-        $carbonDate = $this->getNextOpenDateForMarket( $marketId, $subMarketId, $timezone );
+        $carbonDate = $this->getNextOpenDateForMarket( $marketId,
+                                                       $subMarketId,
+                                                       $anchorDate,
+                                                       $timezone );
         $marketData = $this->marketsById( $marketId, $carbonDate );
 
         // Created $sessionHours just to make the next few lines shorter.
