@@ -240,13 +240,13 @@ trait MarketHoursRequests {
 
 
     /**
-     * @param string $timezone
+     * @param \Carbon\Carbon|null $anchorDate
+     * @param string              $timezone
      *
      * @return \Carbon\Carbon
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPreviousEquityRegularMarketClose( string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
-        $anchorDate          = Carbon::now( $timezone );
+    public function getPreviousEquityRegularMarketClose( Carbon $anchorDate = NULL, string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
         $previousMarketHours = $this->getPreviousSessionTimes( 'equity',
                                                                'EQ',
                                                                $anchorDate,
@@ -256,13 +256,13 @@ trait MarketHoursRequests {
 
 
     /**
-     * @param string $timezone
+     * @param \Carbon\Carbon|null $anchorDate
+     * @param string              $timezone
      *
      * @return \Carbon\Carbon
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getNextEquityRegularMarketOpen( string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
-        $anchorDate      = Carbon::now( $timezone );
+    public function getNextEquityRegularMarketOpen( Carbon $anchorDate = NULL, string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
         $nextMarketHours = $this->getNextSessionTimes( 'equity',
                                                        'EQ',
                                                        $anchorDate,
@@ -272,13 +272,13 @@ trait MarketHoursRequests {
 
 
     /**
-     * @param string $timezone
+     * @param \Carbon\Carbon|null $anchorDate
+     * @param string              $timezone
      *
      * @return \Carbon\Carbon
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getNextEquityRegularMarketClose( string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
-        $anchorDate      = Carbon::now( $timezone );
+    public function getNextEquityRegularMarketClose( Carbon $anchorDate = NULL, string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
         $nextMarketHours = $this->getNextSessionTimes( 'equity',
                                                        'EQ',
                                                        $anchorDate,
