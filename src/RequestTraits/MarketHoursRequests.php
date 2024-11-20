@@ -2,11 +2,14 @@
 
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
-use App\Console\Kernel;
+
 use Carbon\Carbon;
 use MichaelDrennen\SchwabAPI\SchwabAPI;
 
 
+/**
+ *
+ */
 trait MarketHoursRequests {
 
     use RequestTrait;
@@ -35,6 +38,23 @@ trait MarketHoursRequests {
      * @param \Carbon\Carbon|NULL $date
      *
      * @return array
+     * "equity":
+     *      "EQ":
+     *          "date": "2022-04-14",
+     *          "marketType": "EQUITY",
+     *          "product": "EQ",
+     *          "productName": "equity",
+     *          "isOpen": true,
+     *          "sessionHours":
+     *              "preMarket":
+     *                  "start": "2022-04-14T07:00:00-04:00",
+     *                  "end": "2022-04-14T09:30:00-04:00"
+     *              "regularMarket":
+     *                  "start": "2022-04-14T09:30:00-04:00",
+     *                  "end": "2022-04-14T16:00:00-04:00"
+     *              "postMarket":
+     *                  "start": "2022-04-14T16:00:00-04:00",
+     *                  "end": "2022-04-14T20:00:00-04:00"
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
@@ -96,20 +116,220 @@ trait MarketHoursRequests {
     /**
      * The reason I have a subMarketId here...
      *
-     * @param string      $marketId    equity
-     * @param string|NULL $subMarketId EQ
-     * @param string      $timezone
+     * @param string              $marketId    equity
+     * @param string|NULL         $subMarketId EQ
+     * @param \Carbon\Carbon|null $anchorDate
+     * @param string              $timezone
      *
      * @return \Carbon\Carbon
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getNextOpenDateForMarket( string $marketId,
                                               string $subMarketId = NULL,
+                                              Carbon $anchorDate = NULL,
                                               string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
+
+        return $this->_getDateForMarket( 'next',
+                                         $marketId,
+                                         $subMarketId,
+                                         $anchorDate,
+                                         $timezone );
+    }
+
+
+    public function getPreviousOpenDateForMarket( string $marketId,
+                                                  string $subMarketId = NULL,
+                                                  Carbon $anchorDate = NULL,
+                                                  string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
+
+        return $this->_getDateForMarket( 'prev',
+                                         $marketId,
+                                         $subMarketId,
+                                         $anchorDate,
+                                         $timezone );
+    }
+
+
+    /**
+     * @param string $marketId    Ex: equity
+     * @param string $subMarketId Ex: EQ
+     * @param string $timezone    Ex: America/New_York
+     *
+     * @return array Ex:
+     * Array(
+     *      [preMarket] => Array(
+     *          [0] => Array (
+     *              [start] => 2024-11-18T07:00:00-05:00
+     *              [end] => 2024-11-18T09:30:00-05:00
+     *      [regularMarket] => Array(
+     *          [0] => Array(
+     *              [start] => 2024-11-18T09:30:00-05:00
+     *              [end] => 2024-11-18T16:00:00-05:00
+     *      [postMarket] => Array(
+     *          [0] => Array(
+     *              [start] => 2024-11-18T16:00:00-05:00
+     *              [end] => 2024-11-18T20:00:00-05:00
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getNextSessionTimes( string $marketId,
+                                         string $subMarketId,
+                                         Carbon $anchorDate = NULL,
+                                         string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): array {
+        $carbonDate = $this->getNextOpenDateForMarket( $marketId, $subMarketId, $timezone );
+        $marketData = $this->marketsById( $marketId, $carbonDate );
+
+        // Created $sessionHours just to make the next few lines shorter.
+        $sessionHours = $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
+
+        // Convert the timestamps to Carbon objects.
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'start' ]     = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'end' ]       = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'end' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'start' ] = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'end' ]   = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'end' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'start' ]    = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'end' ]      = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'end' ], $timezone );
+
+        return $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
+    }
+
+
+    /**
+     * @param string              $marketId
+     * @param string              $subMarketId
+     * @param \Carbon\Carbon|NULL $anchorDate
+     * @param string              $timezone
+     *
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPreviousSessionTimes( string $marketId,
+                                             string $subMarketId,
+                                             Carbon $anchorDate = NULL,
+                                             string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): array {
+        $carbonDate = $this->getPreviousOpenDateForMarket( $marketId,
+                                                           $subMarketId,
+                                                           $anchorDate,
+                                                           $timezone );
+
+
+        $marketData = $this->marketsById( $marketId, $carbonDate );
+
+        // Created $sessionHours just to make the next few lines shorter.
+        $sessionHours = $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
+
+        // Convert the timestamps to Carbon objects.
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'start' ]     = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'end' ]       = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'end' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'start' ] = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'end' ]   = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'end' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'start' ]    = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'start' ], $timezone );
+        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'end' ]      = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'end' ], $timezone );
+
+        return $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
+    }
+
+
+    /**
+     * @param string $timezone
+     *
+     * @return \Carbon\Carbon
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPreviousEquityRegularMarketClose( string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
+        $anchorDate          = Carbon::now( $timezone );
+        $previousMarketHours = $this->getPreviousSessionTimes( 'equity',
+                                                               'EQ',
+                                                               $anchorDate,
+                                                               $timezone );
+        return $previousMarketHours[ 'regularMarket' ][ 0 ][ 'end' ];
+    }
+
+
+    /**
+     * @param string $timezone
+     *
+     * @return \Carbon\Carbon
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getNextEquityRegularMarketOpen( string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
+        $anchorDate      = Carbon::now( $timezone );
+        $nextMarketHours = $this->getNextSessionTimes( 'equity',
+                                                       'EQ',
+                                                       $anchorDate,
+                                                       $timezone );
+        return $nextMarketHours[ 'regularMarket' ][ 0 ][ 'start' ];
+    }
+
+
+    /**
+     * @param string $timezone
+     *
+     * @return \Carbon\Carbon
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getNextEquityRegularMarketClose( string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
+        $anchorDate      = Carbon::now( $timezone );
+        $nextMarketHours = $this->getNextSessionTimes( 'equity',
+                                                       'EQ',
+                                                       $anchorDate,
+                                                       $timezone );
+        return $nextMarketHours[ 'regularMarket' ][ 0 ][ 'end' ];
+    }
+
+
+    /**
+     * @param array $markets
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected function _throwExceptionIfInvalidParameters( array $markets ): void {
+        foreach ( $markets as $market ) :
+            if ( !in_array( $market, self::MARKETS ) ) :
+                throw new \Exception( "Make sure the markets you are querying for are valid values." );
+            endif;
+        endforeach;
+    }
+
+
+    /**
+     * @param string              $nextPrev
+     * @param string              $marketId
+     * @param string              $subMarketId
+     * @param \Carbon\Carbon|NULL $anchorDate
+     * @param string              $timezone
+     *
+     * @return \Carbon\Carbon
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function _getDateForMarket( string $nextPrev = 'next',
+                                          string $marketId = 'equity',
+                                          string $subMarketId = 'EQ',
+                                          Carbon $anchorDate = NULL,
+                                          string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): Carbon {
+
+        switch ( $nextPrev ):
+            case 'next':
+                $incrementMethod = 'addDay';
+                break;
+            case 'prev':
+                $incrementMethod = 'subDay';
+                break;
+            default:
+                throw new \Exception( "You need to pass in 'next' or 'prev' for the nextPrev parameter." );
+        endswitch;
+
+        if ( $anchorDate ):
+            $date = $anchorDate;
+        else:
+            $date = Carbon::today( $timezone );
+        endif;
+
 
         $maxAttempts = 10;
         $attempt     = 0;
-        $date        = Carbon::today( $timezone );
+        $date        = $date->{$incrementMethod}();
         $isOpen      = FALSE;
         while ( FALSE == $isOpen ):
 
@@ -137,7 +357,7 @@ trait MarketHoursRequests {
              * So continue and check the NEXT day
              */
             if ( isset( $marketData[ $marketId ][ $marketId ] ) ):
-                $date = $date->copy()->addDay();
+                $date = $date->copy()->{$incrementMethod}();
                 $attempt++;
                 continue;
 
@@ -154,61 +374,6 @@ trait MarketHoursRequests {
         endwhile;
 
         return Carbon::parse( $date, $timezone );
-    }
 
-
-    /**
-     * @param string $marketId    Ex: equity
-     * @param string $subMarketId Ex: EQ
-     * @param string $timezone    Ex: America/New_York
-     *
-     * @return array Ex:
-     * Array(
-     *      [preMarket] => Array(
-     *          [0] => Array (
-     *              [start] => 2024-11-18T07:00:00-05:00
-     *              [end] => 2024-11-18T09:30:00-05:00
-     *      [regularMarket] => Array(
-     *          [0] => Array(
-     *              [start] => 2024-11-18T09:30:00-05:00
-     *              [end] => 2024-11-18T16:00:00-05:00
-     *      [postMarket] => Array(
-     *          [0] => Array(
-     *              [start] => 2024-11-18T16:00:00-05:00
-     *              [end] => 2024-11-18T20:00:00-05:00
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getNextSessionTimes( string $marketId, string $subMarketId, string $timezone = SchwabAPI::DEFAULT_TIMEZONE ): array {
-        $carbonDate = $this->getNextOpenDateForMarket( $marketId, $subMarketId, $timezone );
-        $marketData = $this->marketsById( $marketId, $carbonDate );
-
-        // Created $sessionHours just to make the next few lines shorter.
-        $sessionHours = $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
-
-        // Convert the timestamps to Carbon objects.
-        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'start' ]     = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'start' ], $timezone );
-        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'preMarket' ][ 0 ][ 'end' ]       = Carbon::parse( $sessionHours[ 'preMarket' ][ 0 ][ 'end' ], $timezone );
-        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'start' ] = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'start' ], $timezone );
-        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'regularMarket' ][ 0 ][ 'end' ]   = Carbon::parse( $sessionHours[ 'regularMarket' ][ 0 ][ 'end' ], $timezone );
-        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'start' ]    = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'start' ], $timezone );
-        $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ][ 'postMarket' ][ 0 ][ 'end' ]      = Carbon::parse( $sessionHours[ 'postMarket' ][ 0 ][ 'end' ], $timezone );
-
-        return $marketData[ $marketId ][ $subMarketId ][ 'sessionHours' ];
-    }
-
-
-    /**
-     * @param array $markets
-     *
-     * @return void
-     * @throws \Exception
-     */
-    protected function _throwExceptionIfInvalidParameters( array $markets ): void {
-        foreach ( $markets as $market ) :
-            if ( !in_array( $market, self::MARKETS ) ) :
-                throw new \Exception( "Make sure the markets you are querying for are valid values." );
-            endif;
-        endforeach;
     }
 }
