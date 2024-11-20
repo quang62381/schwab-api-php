@@ -137,6 +137,15 @@ trait MarketHoursRequests {
     }
 
 
+    /**
+     * @param string              $marketId
+     * @param string|NULL         $subMarketId
+     * @param \Carbon\Carbon|NULL $anchorDate
+     * @param string              $timezone
+     *
+     * @return \Carbon\Carbon
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function getPreviousOpenDateForMarket( string $marketId,
                                                   string $subMarketId = NULL,
                                                   Carbon $anchorDate = NULL,
@@ -369,6 +378,13 @@ trait MarketHoursRequests {
             elseif ( !isset( $marketData[ $marketId ][ $subMarketId ] ) ):
                 throw new \Exception( "You were looking for " . $marketId . ':' . $subMarketId . " and that doesn't exist." );
             endif;
+
+
+            // TODO Add code to check if the Market WAS open today at the time this method was called.
+            // The idea here is that if you are asking for the PREVIOUS market close, and
+            // the USER is asking AFTER today's market has closed, the method should
+            // probably return TODAY'S market close time.
+
 
             $isOpen = (bool)$marketData[ $marketId ][ $subMarketId ][ 'isOpen' ];
         endwhile;
