@@ -58,4 +58,10 @@ trait AccountRequests {
         $response = $this->_request( $suffix );
         return $this->json( $response );
     }
+
+
+    public function getPositions( string $hashValueOfAccountNumber ): array {
+        $account = $this->account( $hashValueOfAccountNumber );
+        // TODO search for positions and pull tickers and position data.
+    }
 }
