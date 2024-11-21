@@ -52,7 +52,8 @@ trait AccountRequests {
         $suffix = '/trader/v1/accounts/' . $hashValueOfAccountNumber;
 
         if ( $fields ):
-            $suffix .= '?' . http_build_query( $fields );
+            $suffix .= '?fields=' . implode( ',', $fields );
+            //$suffix .= '?' . http_build_query( $fields );
         endif;
 
         $response = $this->_request( $suffix );
@@ -60,8 +61,62 @@ trait AccountRequests {
     }
 
 
-    public function getPositions( string $hashValueOfAccountNumber ): array {
-        $account = $this->account( $hashValueOfAccountNumber );
-        // TODO search for positions and pull tickers and position data.
+    public function getLongEquityPositions( string $hashValueOfAccountNumber ): array {
+        $positions = [];
+        $account   = $this->account( $hashValueOfAccountNumber, [ 'positions' ] );
+
+        if ( !isset ( $account[ 'securitiesAccount' ][ 'positions' ] ) ) :
+            return [];
+        endif;
+
+
+        /**
+         * @var array $position
+         */
+
+        // array:15 [
+        //    "shortQuantity" => 0.0
+        //    "averagePrice" => 0.305
+        //    "currentDayProfitLoss" => 0.0
+        //    "currentDayProfitLossPercentage" => 0.0
+        //    "longQuantity" => 2.0
+        //    "settledLongQuantity" => 2.0
+        //    "settledShortQuantity" => 0.0
+        //    "instrument" => array:4
+        //      "assetType" => "EQUITY"
+        //      "cusip" => "205750300"
+        //      "symbol" => "LODE"
+        //      "netChange" => -0.0025
+        //    ]
+        //    "marketValue" => 0.7
+        //    "maintenanceRequirement" => 0.7
+        //    "averageLongPrice" => 0.3055
+        //    "taxLotAverageLongPrice" => 0.305
+        //    "longOpenProfitLoss" => 0.085
+        //    "previousSessionLongQuantity" => 2.0
+        //    "currentDayCost" => 0.0
+        //  ]
+        foreach ( $account[ 'securitiesAccount' ][ 'positions' ] as $position ) :
+            if ( $position[ 'longQuantity' ] <= 0 ):
+                continue;
+            endif;
+
+            if ( 'EQUITY' != $position[ 'instrument' ][ 'assetType' ] ):
+                continue;
+            endif;
+
+            // For this method, I am only looking at simple EQUITY securities.
+            // Where there will only be ONE instrument associated with this position.
+            // So to make it simple for me, I flatten the instrumend array, so
+            // I don't end up looking for a ticker in a nested array in my other code.
+            $position[ 'assetType' ] = $position[ 'instrument' ][ 'assetType' ];
+            $position[ 'cusip' ]     = $position[ 'instrument' ][ 'cusip' ];
+            $position[ 'symbol' ]    = $position[ 'instrument' ][ 'symbol' ];
+            $position[ 'netChange' ] = $position[ 'instrument' ][ 'netChange' ];
+            unset( $position[ 'instrument' ] );
+            $positions[] = $position;
+        endforeach;
+
+        return $positions;
     }
 }
