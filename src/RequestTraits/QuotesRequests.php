@@ -44,6 +44,42 @@ trait QuotesRequests {
      * @param array  $fields Request for subset of data by passing coma separated list of root nodes, possible root nodes are quote, fundamental, extended, reference, regular. Don't send this attribute for full response.
      *
      * @return array
+     * ["TBLA" => array:7 [▼
+     * "assetMainType" => "EQUITY"
+     * "assetSubType" => "COE"
+     * "quoteType" => "NBBO"
+     * "realtime" => true
+     * "ssid" => 73833092
+     * "symbol" => "TBLA"
+     * "quote" => array:28 [
+     **** "52WeekHigh" => 5.0
+     *** "52WeekLow" => 2.87
+     *** "askMICId" => "ARCX"
+     *** "askPrice" => 3.6
+     *** "askSize" => 51
+     *** "askTime" => 1732220677330
+     *** "bidMICId" => "XNAS"
+     *** "bidPrice" => 3.59
+     *** "bidSize" => 24
+     *** "bidTime" => 1732220675465
+     *** "closePrice" => 3.3
+     *** "highPrice" => 3.67
+     *** "lastMICId" => "XADF"
+     *** "lastPrice" => 3.59
+     *** "lastSize" => 400
+     *** "lowPrice" => 3.48
+     *** "mark" => 3.59
+     *** "markChange" => 0.29
+     *** "markPercentChange" => 8.78787879
+     *** "netChange" => 0.29
+     *** "netPercentChange" => 8.78787879
+     *** "openPrice" => 3.5
+     *** "postMarketChange" => 0.0
+     *** "postMarketPercentChange" => 0.0
+     *** "quoteTime" => 1732220677330
+     *** "securityStatus" => "Normal"
+     *** "totalVolume" => 2373190
+     *** "tradeTime" => 1732220641538
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function quotesBySymbol( string $symbol,
