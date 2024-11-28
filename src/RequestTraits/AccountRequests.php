@@ -5,7 +5,6 @@ namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
 trait AccountRequests {
 
-    use StatlerTrait;
     use RequestTrait;
 
 

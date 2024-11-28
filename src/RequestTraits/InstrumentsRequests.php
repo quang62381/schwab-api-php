@@ -2,13 +2,8 @@
 
 namespace MichaelDrennen\SchwabAPI\RequestTraits;
 
-use App\Statler\StatlerTrait;
-use Carbon\Carbon;
-
-
 trait InstrumentsRequests {
 
-    use StatlerTrait;
     use RequestTrait;
 
     const VALID_PROJECTIONS = [
