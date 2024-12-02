@@ -43,6 +43,42 @@ trait AccountRequests {
 
 
     /**
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function accountsByNumber(): array {
+        $accounts         = $this->accounts();
+        $accountsByNumber = [];
+
+        /**
+         * @var array $account
+         */
+        foreach ( $accounts as $i => $account ):
+            $accountNumber                      = $account[ 'securitiesAccount' ][ 'accountNumber' ];
+            $accountsByNumber[ $accountNumber ] = $account;
+        endforeach;
+        return $accountsByNumber;
+    }
+
+
+    /**
+     * @param int $accountNumber
+     *
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function accountByNumber( int $accountNumber ): array {
+        $accounts         = $this->accounts();
+        $accountsByNumber = $this->accountsByNumber();
+        if ( isset( $accountsByNumber[ $accountNumber ] ) ):
+            return $accountsByNumber[ $accountNumber ];
+        endif;
+
+        throw new \Exception( "Unable to find account with accountNumber: $accountNumber" );
+    }
+
+
+    /**
      * @param string $hashValueOfAccountNumber This hash value is returned by the '/accounts/accountNumbers' endpoint. Ex: E49D5746FD010E582E364C28E9D6A763D972C3A0C0C90170878260D0A6C65453
      * @param array  $fields                   In the Schwab docs, the only 'field' mentioned is 'positions' like in the accounts() method above. However, they elude to there being more.
      *
