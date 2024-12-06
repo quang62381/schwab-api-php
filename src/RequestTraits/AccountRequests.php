@@ -66,6 +66,7 @@ trait AccountRequests {
      *
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
      */
     public function accountByNumber( int $accountNumber ): array {
         $accountsByNumber = $this->accountsByNumber();
