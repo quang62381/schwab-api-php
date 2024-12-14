@@ -36,24 +36,24 @@ class SchwabAPI {
     /**
      * @var bool
      */
-    protected bool $debug;
+    protected ?bool $debug;
 
     /**
      * @var string
      */
-    protected string $apiKey;
+    protected ?string $apiKey;
 
 
     /**
      * @var string
      */
-    protected string $apiSecret;
+    protected ?string $apiSecret;
 
 
     /**
      * @var string This is set within the Schwab Developer web UI.
      */
-    protected string $apiCallbackUrl;
+    protected ?string $apiCallbackUrl;
 
 
     /**
@@ -67,7 +67,7 @@ class SchwabAPI {
      * @var string Also returned from https://api.schwabapi.com/v1/oauth/authorize?
      * @url https://developer.schwab.com/products/trader-api--individual/details/documentation/Retail%20Trader%20API%20Production
      */
-    protected string $session;
+    protected ?string $session;
 
 
     // START PROPERTIES THAT ARE SET FROM $this->requestToken()
@@ -75,18 +75,18 @@ class SchwabAPI {
     /**
      * @var int Ex: "expires_in" => 1800
      */
-    protected int $expiresIn;
+    protected ?int $expiresIn;
 
 
     /**
      * @var string Ex: "token_type" => "Bearer"
      */
-    protected string $tokenType;
+    protected ?string $tokenType;
 
     /**
      * @var string Ex: "scope" => "api"
      */
-    protected string $scope;
+    protected ?string $scope;
 
 
     /**
@@ -108,7 +108,7 @@ class SchwabAPI {
     /**
      * @var string Ex: "id_token" => "a-super-long-string"
      */
-    protected string $idToken;
+    protected ?string $idToken;
     // END PROPERTIES THAT ARE SET FROM $this->requestToken()
 
 
@@ -140,7 +140,36 @@ class SchwabAPI {
         $this->refreshToken   = $refreshToken;
         $this->debug          = $debug;
 
+        $this->session        = NULL;
+        $this->expiresIn      = NULL;
+        $this->idToken        = NULL;
+        $this->tokenType      = NULL;
+        $this->scope          = NULL;
+        $this->refreshToken   = NULL;
+
+
         $this->client = $this->createGuzzleClient( $this->accessToken, $this->debug );
+    }
+
+
+
+    public function __toString(): string {
+        $rows = [];
+
+        $rows[] = "Schwab API: ";
+        $rows[] = " apiKey: " . $this->apiKey;
+        $rows[] = " apiSecret: " . $this->apiSecret;
+        $rows[] = " apiCallbackUrl: " . $this->apiCallbackUrl;
+        $rows[] = " session: " . $this->session;
+        $rows[] = " expiresIn: " . $this->expiresIn;
+        $rows[] = " tokenType: " . $this->tokenType;
+        $rows[] = " scope: " . $this->scope;
+        $rows[] = " refreshToken: " . $this->refreshToken;
+        $rows[] = " accessToken: " . $this->accessToken;
+        $rows[] = " idToken: " . $this->idToken;
+        $rows[] = " debug: " . $this->debug;
+
+        return implode( PHP_EOL, $rows );
     }
 
 
