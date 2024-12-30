@@ -145,8 +145,6 @@ class SchwabAPI {
         $this->idToken        = NULL;
         $this->tokenType      = NULL;
         $this->scope          = NULL;
-        $this->refreshToken   = NULL;
-
 
         $this->client = $this->createGuzzleClient( $this->accessToken, $this->debug );
     }
