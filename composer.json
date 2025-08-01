@@ -1,5 +1,5 @@
 {
-    "name": "michaeldrennen/schwab-api-php",
+    "name": "quang62381/schwab-api-php",
     "description": "A PHP library to connect to the Charles Schwab API.",
     "type": "library",
     "require": {
